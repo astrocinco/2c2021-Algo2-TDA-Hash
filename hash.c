@@ -1,23 +1,41 @@
-// uwu
-// Hay que definir si hacemos un hash abierto o cerrado. Y qué tipo, si elegimos cerrado
-// Supongo que la decisión dependerá de que tan bueno y dificil lo querramos hacer
+#include "funciones_hash.c"
+#include <stdio.h>
+#include <stddef.h>
+#include <stdbool.h>
+#include <stdlib.h> 
+// NO SE SI ALGUNO DE ESTOS INCLUDES SOBRA
+#define CAPACIDAD_INICIAL = 100 
 
 // ESTRUCTURAS
 typedef struct hash {
-
+    void* lista;
+    int cantidad_campos;
+    int capacidad;
 } hash_t;
 
-typedef struct hash_iter {
+typedef struct campo {
+    char* clave;
+    void* contenido;
+} campo_t;
 
+typedef struct hash_iter {
+    // TO DO
 } hash_iter_t;
 
 typedef void (*hash_destruir_dato_t)(void *){
-
-} // QUE CARARJO ES ESTO ------------------
+    // TO DO
+} 
 
 // PRIMITIVAS HASH
 hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
+    hash_t* hash = malloc(sizeof(hash_t));
+    if (hash == NULL) return NULL;
 
+    hash->lista = malloc(sizeof(campo_t) * CAPACIDAD_INICIAL);
+    hash->cantidad_campos = 0;
+    hash->capacidad =  = CAPACIDAD_INICIAL;
+
+    return hash;
 }
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){
