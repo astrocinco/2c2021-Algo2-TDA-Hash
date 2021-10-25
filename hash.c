@@ -9,8 +9,8 @@
 // ESTRUCTURAS
 typedef struct hash {
     void* lista;
-    int cantidad_campos;
-    int capacidad;
+    int capacidad_lista;
+    int cantidad_en_lista;
 } hash_t;
 
 typedef struct campo {
@@ -32,8 +32,8 @@ hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
     if (hash == NULL) return NULL;
 
     hash->lista = malloc(sizeof(campo_t) * CAPACIDAD_INICIAL);
-    hash->cantidad_campos = 0;
-    hash->capacidad =  = CAPACIDAD_INICIAL;
+    hash->cantidad_en_lista = 0;
+    hash->capacidad_lista =  = CAPACIDAD_INICIAL;
 
     return hash;
 }
