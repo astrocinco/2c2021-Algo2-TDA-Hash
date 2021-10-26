@@ -13,7 +13,7 @@
 // FUNCION DJB2
 // https://stackoverflow.com/questions/7666509/hash-function-for-string
 unsigned long
-djb2fun(unsigned char *str)
+djb2(unsigned char *str)
 {
     unsigned long hash = 5381;
     int c;
@@ -44,9 +44,13 @@ unsigned char *str;
 // Si escribiste una función que no está retorna 0 en la terminal.
 int main(int argc, char* argv[]){
   long resultado = 0;
+  if (argc != 3) {
+    printf("Error cantidad de parametros\n");
+    return -1;
+  }
 
   if (strcmp(argv[1], "djb2") == 0){
-    resultado = djb2fun(argv[2]);
+    resultado = djb2(argv[2]);
   }
 
   if (strcmp(argv[1], "sdbm") == 0){
