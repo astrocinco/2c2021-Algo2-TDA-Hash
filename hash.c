@@ -31,6 +31,10 @@ campo_t* crear_campo(char* clave, void* dato){
     return campo;
 }
 
+void destruir_campo(campo_t* campo_rip){
+    free(campo_rip); // REVISAR NO FALTE ALGO MÁS ACÁ
+}
+
 typedef struct hash_iter {
     // TO DO
 } hash_iter_t;
@@ -56,7 +60,7 @@ bool hash_redimensionar(hash_t* hash, nueva_capacidad){
 }
 
 bool pos_esta_ocupada(hash_t *hash, int posicion){
-
+    return (hash->lista[posicion] != NULL);
 }
 
 bool hash_guardar_aux(hash_t* hash, int posicion, char* clave, void* dato){
@@ -95,23 +99,73 @@ bool hash_guardar(hash_t *hash, const char *clave, void *dato){ // FINISH
 }
 
 void *hash_borrar(hash_t *hash, const char *clave){
+    void* dato_resultado = hash_obtener(hash, clave);
+    if (dato == NULL) return dato;
 
+    int pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
+    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
+
+    pos_a_eliminar = FUN_HASHING2(clave) % hash->capacidad_lista;
+    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+
+    pos_a_eliminar = FUN_HASHING3(clave) % hash->capacidad_lista;
+    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+
+    pos_a_eliminar = FUN_HASHING4(clave) % hash->capacidad_lista;
+    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
 }
 
-void *hash_obtener(const hash_t *hash, const char *clave){
+void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
+    if (!hash_pertenece(hash, clave)) return NULL;
 
+    int hashing_clave = FUN_HASHING1(clave) % hash->capacidad_lista;
+    if (stgcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+
+    hashing_clave = FUN_HASHING2(clave) % hash->capacidad_lista;
+    if (stgcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+
+    hashing_clave = FUN_HASHING3(clave) % hash->capacidad_lista;
+    if (stgcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+
+    hashing_clave = FUN_HASHING4(clave) % hash->capacidad_lista;
+    if (stgcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+
+    printf("REVISAR HASH_OBTENER hash.c");
+    return NULL; // NUNCA DEBERÍA LLEGAR AQUI 
 }
 
-bool hash_pertenece(const hash_t *hash, const char *clave){
+bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
+    int hashing_clave = FUN_HASHING1(clave);
+    if (hash->lista[hashing_clave] != NULL) {
+        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    } // Revisar si lista vacía retorna NULL
 
+    int hashing_clave = FUN_HASHING2(clave);
+    if (hash->lista[hashing_clave] != NULL) {
+        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    } // Revisar si lista vacía retorna NULL
+
+    int hashing_clave = FUN_HASHING3(clave);
+    if (hash->lista[hashing_clave] != NULL) {
+        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    } // Revisar si lista vacía retorna NULL
+
+    int hashing_clave = FUN_HASHING4(clave);
+    if (hash->lista[hashing_clave] != NULL) {
+        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    } // Revisar si lista vacía retorna NULL
+
+    return false;
 }
 
 size_t hash_cantidad(const hash_t *hash){
-
+    return hash->cantidad_en_lista;
 }
 
 void hash_destruir(hash_t *hash){
-
+    // free(CADA CAMPO QUE QUEDO EN LA LISTA?);
+    free(hash->lista);
+    free(hash);
 }
 
 // PRIMITIVAS ITERADOR
