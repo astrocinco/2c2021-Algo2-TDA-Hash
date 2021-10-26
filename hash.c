@@ -13,7 +13,8 @@
 #define FUN_HASHING3 XXX // ELEGIR FUNCION DE HASHING
 #define FUN_HASHING4 XXX // ELEGIR FUNCION DE HASHING
 
-// ESTRUCTURAS
+// ----ESTRUCTURAS----
+
 typedef struct hash {
     void* lista;
     int capacidad_lista;
@@ -25,6 +26,17 @@ typedef struct campo {
     void* contenido;
 } campo_t;
 
+typedef struct hash_iter {
+    // TO DO
+} hash_iter_t;
+
+typedef void (*hash_destruir_dato_t)(void *){
+    // TO DO. WTF IS THIS
+} 
+
+// ----PRIMITIVAS----
+
+// PRIMITIVAS CAMPO
 campo_t* crear_campo(char* clave, void* dato){
     campo->clave = clave;
     campo->dato = dato;
@@ -34,14 +46,6 @@ campo_t* crear_campo(char* clave, void* dato){
 void destruir_campo(campo_t* campo_rip){
     free(campo_rip); // REVISAR NO FALTE ALGO MÁS ACÁ
 }
-
-typedef struct hash_iter {
-    // TO DO
-} hash_iter_t;
-
-typedef void (*hash_destruir_dato_t)(void *){
-    // TO DO
-} 
 
 // PRIMITIVAS HASH
 hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
@@ -56,7 +60,7 @@ hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
 }
 
 bool hash_redimensionar(hash_t* hash, nueva_capacidad){
-
+    // TO DO
 }
 
 bool pos_esta_ocupada(hash_t *hash, int posicion){
@@ -92,9 +96,7 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
 }
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){ // FINISH
-    if (hash_obtener(XXX) != NULL) {
-        hash_borrar(XXX);
-    }
+    hash_borrar(hash, clave);
     return hash_encontrar_pos_libre();
 }
 
