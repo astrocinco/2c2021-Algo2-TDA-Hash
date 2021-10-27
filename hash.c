@@ -8,10 +8,10 @@
 #define FACTOR_NVO_TAM 10
 #define MAX_FACTOR_CARGA 0.8
 #define MIN_FACTOR_CARGA 0.1
-#define FUN_HASHING1 djb2 
-#define FUN_HASHING2 sdbm 
-#define FUN_HASHING3 XXX // ELEGIR FUNCION DE HASHING
-#define FUN_HASHING4 XXX // ELEGIR FUNCION DE HASHING
+#define FUN_HASHING1 djb2
+#define FUN_HASHING2 sdbm
+#define FUN_HASHING3 func_vacia_1 // ELEGIR FUNCION DE HASHING
+#define FUN_HASHING4 func_vacia_2 // ELEGIR FUNCION DE HASHING
 
 // ----ESTRUCTURAS----
 
@@ -101,42 +101,50 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
 
 bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
     int hashing_clave = FUN_HASHING1(clave_ingresada);
-    if (hash->lista[hashing_clave] != NULL) {
-        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    campo_t* campo_observado = hash->lista[hashing_clave];
+    if (campo_observado != NULL) {
+        if (campo_observado->clave == clave_ingresada) return true;
     } // Revisar si lista vacía retorna NULL
 
     hashing_clave = FUN_HASHING2(clave_ingresada);
-    if (hash->lista[hashing_clave] != NULL) {
-        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    campo_observado = hash->lista[hashing_clave];
+    if (campo_observado != NULL) {
+        if (campo_observado->clave == clave_ingresada) return true;
     } // Revisar si lista vacía retorna NULL
 
     hashing_clave = FUN_HASHING3(clave_ingresada);
-    if (hash->lista[hashing_clave] != NULL) {
-        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    campo_observado = hash->lista[hashing_clave];
+    if (campo_observado != NULL) {
+        if (campo_observado->clave == clave_ingresada) return true;
     } // Revisar si lista vacía retorna NULL
 
     hashing_clave = FUN_HASHING4(clave_ingresada);
-    if (hash->lista[hashing_clave] != NULL) {
-        if ((hash->lista[hashing_clave])->clave == clave_ingresada) return true;
+    campo_observado = hash->lista[hashing_clave];
+    if (campo_observado != NULL) {
+        if (campo_observado->clave == clave_ingresada) return true;
     } // Revisar si lista vacía retorna NULL
 
     return false;
 }
 
 void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
-    if (!hash_pertenece(hash, clave)) return NULL;
+    if (!hash_pertenece(hash, clave_ingresada)) return NULL;
 
-    int hashing_clave = FUN_HASHING1(clave) % hash->capacidad_lista;
-    if (strcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+    int hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
+    campo_t* campo_observado = hash->lista[hashing_clave];
+    if (strcmp(campo_observado->clave, clave_ingresada) == 0) return campo_observado->dato;
 
-    hashing_clave = FUN_HASHING2(clave) % hash->capacidad_lista;
-    if (strcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+    hashing_clave = FUN_HASHING2(clave_ingresada) % hash->capacidad_lista;
+    campo_observado = hash->lista[hashing_clave];
+    if (strcmp(campo_observado->clave, clave_ingresada) == 0) return campo_observado->dato;
 
-    hashing_clave = FUN_HASHING3(clave) % hash->capacidad_lista;
-    if (strcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+    hashing_clave = FUN_HASHING3(clave_ingresada) % hash->capacidad_lista;
+    campo_observado = hash->lista[hashing_clave];
+    if (strcmp(campo_observado->clave, clave_ingresada) == 0) return campo_observado->dato;
 
-    hashing_clave = FUN_HASHING4(clave) % hash->capacidad_lista;
-    if (strcmp((hash->lista)[hashing_clave]->clave, clave_ingresada) == 0) return (hash->lista)[hashing_clave]->dato;
+    hashing_clave = FUN_HASHING4(clave_ingresada) % hash->capacidad_lista;
+    campo_observado = hash->lista[hashing_clave];
+    if (strcmp(campo_observado->clave, clave_ingresada) == 0) return campo_observado->dato;
 
     printf("REVISAR HASH_OBTENER hash.c");
     return NULL; // NUNCA DEBERÍA LLEGAR AQUI 
@@ -147,16 +155,17 @@ void *hash_borrar(hash_t *hash, const char *clave){
     if (dato_resultado == NULL) return dato_resultado;
 
     int pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
-    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
+    campo_t* campo_observado = hash->lista[pos_a_eliminar];
+    if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
 
     pos_a_eliminar = FUN_HASHING2(clave) % hash->capacidad_lista;
-    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+    if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
 
     pos_a_eliminar = FUN_HASHING3(clave) % hash->capacidad_lista;
-    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+    if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
 
     pos_a_eliminar = FUN_HASHING4(clave) % hash->capacidad_lista;
-    if (hash->lista[pos_a_eliminar]->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+    if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
 }
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){ // FINISH

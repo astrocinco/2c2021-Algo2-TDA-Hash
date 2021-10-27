@@ -39,6 +39,18 @@ unsigned char *str;
     return hash;
 }
 
+// CONSEGUIR FUNCION
+static unsigned long func_vacia_1(unsigned char *str){
+  static unsigned long hash = 0;
+  return hash;
+}
+
+// CONSEGUIR FUNCION
+static unsigned long func_vacia_2(unsigned char *str){
+  static unsigned long hash = 0;
+  return hash;
+}
+/*
 // .C para probar funciones de hashing. Compilar y llamar como: ./NOMBRE_COMPILADO NOMBRE_FUNCION TEXTO
 // Ejemplo: astrocinco$ ./prueba_funciones djb2 hola  ----->  Resultado: hola -> 6385302889
 // Si escribiste una función que no está retorna 0 en la terminal.
@@ -60,3 +72,4 @@ int main(int argc, char* argv[]){
   printf("Resultado: %s -> %li\n", argv[2], resultado);
   return 0;
 }
+*/
