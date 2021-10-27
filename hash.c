@@ -27,7 +27,8 @@ typedef struct campo {
 } campo_t;
 
 typedef struct hash_iter {
-    // TO DO
+    int altura_en_lista;
+    bool al_final;
 } hash_iter_t;
 /*
 typedef void (*hash_destruir_dato_t)(void *){
@@ -37,6 +38,8 @@ typedef void (*hash_destruir_dato_t)(void *){
 // ----PRIMITIVAS----
 // PRIMITIVAS ITERADOR
 hash_iter_t *hash_iter_crear(const hash_t *hash){
+    hash_iter_t* iterador = malloc(sizeof(hash_iter_t));
+    int altura_en_lista = 0;
 
 }
 
@@ -98,46 +101,47 @@ bool hash_redimensionar(hash_t* hash, int nueva_capacidad){
         nueva_lista[i] = NULL;
     }
 
-    hash_iter_t* iterador = hash_iter_crear();
+    hash_iter_t* iterador = hash_iter_crear(hash);
     char* clave_actual;
     void* contenido_campo;
     int pos_hash;
+    int nueva_pos_hash;
     campo_t* campo_observado;
 
     while(!hash_iter_al_final(iterador)){
         clave_actual = hash_iter_ver_actual(iterador);
 
-        pos_hash = FUN_HASHING1(clave) % hash->capacidad_lista;
+        pos_hash = FUN_HASHING1(clave_actual) % hash->capacidad_lista;
         campo_observado = hash->lista[pos_hash];
-        nueva_pos_hash = FUN_HASHING1(clave) % nueva_capacidad;
         if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_pos_hash = FUN_HASHING1(clave_actual) % nueva_capacidad;
             nueva_lista[nueva_pos_hash] = campo_observado;
             hash_iter_avanzar(iterador);
             continue;
         }
 
-        pos_hash = FUN_HASHING2(clave) % hash->capacidad_lista;
+        pos_hash = FUN_HASHING2(clave_actual) % hash->capacidad_lista;
         campo_observado = hash->lista[pos_hash];
-        nueva_pos_hash = FUN_HASHING2(clave) % nueva_capacidad;
         if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_pos_hash = FUN_HASHING2(clave_actual) % nueva_capacidad;
             nueva_lista[nueva_pos_hash] = campo_observado;
             hash_iter_avanzar(iterador);
             continue;
         }
 
-        pos_hash = FUN_HASHING3(clave) % hash->capacidad_lista;
+        pos_hash = FUN_HASHING3(clave_actual) % hash->capacidad_lista;
         campo_observado = hash->lista[pos_hash];
-        nueva_pos_hash = FUN_HASHING3(clave) % nueva_capacidad;
         if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_pos_hash = FUN_HASHING3(clave_actual) % nueva_capacidad;
             nueva_lista[nueva_pos_hash] = campo_observado;
             hash_iter_avanzar(iterador);
             continue;
         }
 
-        pos_hash = FUN_HASHING4(clave) % hash->capacidad_lista;
+        pos_hash = FUN_HASHING4(clave_actual) % hash->capacidad_lista;
         campo_observado = hash->lista[pos_hash];
-        nueva_pos_hash = FUN_HASHING4(clave) % nueva_capacidad;
         if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_pos_hash = FUN_HASHING4(clave_actual) % nueva_capacidad;
             nueva_lista[nueva_pos_hash] = campo_observado;
             hash_iter_avanzar(iterador);
             continue;
