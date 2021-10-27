@@ -35,6 +35,26 @@ typedef void (*hash_destruir_dato_t)(void *){
 } 
 */
 // ----PRIMITIVAS----
+// PRIMITIVAS ITERADOR
+hash_iter_t *hash_iter_crear(const hash_t *hash){
+
+}
+
+bool hash_iter_avanzar(hash_iter_t *iter){
+
+}
+
+const char *hash_iter_ver_actual(const hash_iter_t *iter){
+
+}
+
+bool hash_iter_al_final(const hash_iter_t *iter){
+
+}
+
+void hash_iter_destruir(hash_iter_t* iter){
+
+}
 
 // PRIMITIVAS CAMPO
 campo_t* crear_campo(const char* clave, void* dato){
@@ -56,15 +76,79 @@ hash_t *hash_crear(){
     hash_t* hash = malloc(sizeof(hash_t));
     if (hash == NULL) return NULL;
 
-    hash->lista = malloc(sizeof(campo_t) * CAPACIDAD_INICIAL);
+    void** lista_din = malloc(sizeof(campo_t) * CAPACIDAD_INICIAL);
+    if (lista_din == NULL) return NULL;
+
+    hash->lista = lista_din;
     hash->cantidad_lista = 0;
     hash->capacidad_lista = CAPACIDAD_INICIAL;
+
+    for (int i = 0; i < CAPACIDAD_INICIAL; i++){
+        hash->lista[i] = NULL;
+    }
 
     return hash;
 }
 
 bool hash_redimensionar(hash_t* hash, int nueva_capacidad){
-    // TO DO
+    void** nueva_lista = malloc(sizeof(campo_t) * nueva_capacidad);
+    if (nueva_lista == NULL) return false;
+
+    for (int i = 0; i < nueva_capacidad; i++){
+        nueva_lista[i] = NULL;
+    }
+
+    hash_iter_t* iterador = hash_iter_crear();
+    char* clave_actual;
+    void* contenido_campo;
+    int pos_hash;
+    campo_t* campo_observado;
+
+    while(!hash_iter_al_final(iterador)){
+        clave_actual = hash_iter_ver_actual(iterador);
+
+        pos_hash = FUN_HASHING1(clave) % hash->capacidad_lista;
+        campo_observado = hash->lista[pos_hash];
+        nueva_pos_hash = FUN_HASHING1(clave) % nueva_capacidad;
+        if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_lista[nueva_pos_hash] = campo_observado;
+            hash_iter_avanzar(iterador);
+            continue;
+        }
+
+        pos_hash = FUN_HASHING2(clave) % hash->capacidad_lista;
+        campo_observado = hash->lista[pos_hash];
+        nueva_pos_hash = FUN_HASHING2(clave) % nueva_capacidad;
+        if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_lista[nueva_pos_hash] = campo_observado;
+            hash_iter_avanzar(iterador);
+            continue;
+        }
+
+        pos_hash = FUN_HASHING3(clave) % hash->capacidad_lista;
+        campo_observado = hash->lista[pos_hash];
+        nueva_pos_hash = FUN_HASHING3(clave) % nueva_capacidad;
+        if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_lista[nueva_pos_hash] = campo_observado;
+            hash_iter_avanzar(iterador);
+            continue;
+        }
+
+        pos_hash = FUN_HASHING4(clave) % hash->capacidad_lista;
+        campo_observado = hash->lista[pos_hash];
+        nueva_pos_hash = FUN_HASHING4(clave) % nueva_capacidad;
+        if (strcmp(campo_observado->clave, clave_actual) == 0) {
+            nueva_lista[nueva_pos_hash] = campo_observado;
+            hash_iter_avanzar(iterador);
+            continue;
+
+        return false;
+        }
+    }
+    free(hash->lista);
+    hash->lista = nueva_lista;
+    hash_iter_destruir(iterador);
+    return true;
 }
 
 bool pos_esta_ocupada(hash_t *hash, int posicion){
@@ -96,7 +180,7 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
     pos_fun_hash = FUN_HASHING4(clave) % hash->capacidad_lista;
     if (!pos_esta_ocupada(hash, pos_fun_hash)) return hash_guardar_aux(hash, pos_fun_hash, clave, dato);
 
-    return false; // ESTO DEBERÍA SER UN RETURN FALSE O UNA LLAMADA A REDIMENSIONAR E INTENTAR TODA LA FUNCION DE NUEVO?
+    return false; // ESTO DEBERÍA SER UN RETURN FALSE O UNA LLAMADA A hash_redimensionar E INTENTAR TODA LA FUNCION DE NUEVO?
 }
 
 bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
@@ -183,23 +267,3 @@ void hash_destruir(hash_t *hash){
     free(hash);
 }
 
-// PRIMITIVAS ITERADOR
-hash_iter_t *hash_iter_crear(const hash_t *hash){
-
-}
-
-bool hash_iter_avanzar(hash_iter_t *iter){
-
-}
-
-const char *hash_iter_ver_actual(const hash_iter_t *iter){
-
-}
-
-bool hash_iter_al_final(const hash_iter_t *iter){
-
-}
-
-void hash_iter_destruir(hash_iter_t* iter){
-
-}
