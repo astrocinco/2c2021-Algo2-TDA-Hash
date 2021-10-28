@@ -35,7 +35,7 @@ unsigned char *str;
 }
 
 // Paul Larson's
-// Originalmente era de c++ y recibía una seed. Reemplazar/ rehacer
+// Originalmente era de c++ y recibía una seed. Lo cambié para que compile en C. Reemplazar/ rehacer si es incorrecto
 // https://stackoverflow.com/questions/98153/whats-the-best-hashing-algorithm-to-use-on-a-stl-string-when-using-hash-map
 unsigned int
 paul(

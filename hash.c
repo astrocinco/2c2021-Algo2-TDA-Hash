@@ -63,7 +63,7 @@ int hash_iter_conseguir_prox_campo(const hash_iter_t* iter){
     for (int i = iter->altura_actual_lista; i < iter->hash->capacidad_lista; i++){
         if (iter->hash->lista[i] != NULL) return i;
     }   
-    return NULL;
+    return -1;
 }
 
 bool hash_iter_avanzar(hash_iter_t *iter){
@@ -134,8 +134,8 @@ bool hash_redimensionar(hash_t* hash, int nueva_capacidad){
     hash_iter_t* iterador = hash_iter_crear(hash);
     char* clave_actual;
     void* contenido_campo;
-    int pos_hash;
-    int nueva_pos_hash;
+    size_t pos_hash;
+    size_t nueva_pos_hash;
     campo_t* campo_observado;
 
     while(!hash_iter_al_final(iterador)){
@@ -202,7 +202,7 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
     if (hash->cantidad_lista / hash->capacidad_lista > MAX_FACTOR_CARGA) hash_redimensionar(hash, hash->capacidad_lista * FACTOR_NVO_TAM); // CREO QUE TENGO QUE ARMAR UNA LISTA CON NUEVAS CAPACIDAD QUE SEAN NUMEROS PRIMOS, NO UN MULTIPLICADOR DE NUEVO TAMAÑO
 
     //int pos_fun_hash = djb2(clave) % hash->capacidad_lista; // EN CASO QUE FUN_HASHING° NO FUNCIONE
-    int pos_fun_hash = FUN_HASHING1(clave) % hash->capacidad_lista;
+    size_t pos_fun_hash = FUN_HASHING1(clave) % hash->capacidad_lista;
     if (!pos_esta_ocupada(hash, pos_fun_hash)) return hash_guardar_aux(hash, pos_fun_hash, clave, dato);
     
     pos_fun_hash = FUN_HASHING2(clave) % hash->capacidad_lista;
@@ -218,7 +218,7 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
 }
 
 bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
-    int hashing_clave = FUN_HASHING1(clave_ingresada);
+    size_t hashing_clave = FUN_HASHING1(clave_ingresada);
     campo_t* campo_observado = hash->lista[hashing_clave];
     if (campo_observado != NULL) {
         if (campo_observado->clave == clave_ingresada) return true;
@@ -248,7 +248,7 @@ bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
 void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
     if (!hash_pertenece(hash, clave_ingresada)) return NULL;
 
-    int hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
+    size_t hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
     campo_t* campo_observado = hash->lista[hashing_clave];
     if (strcmp(campo_observado->clave, clave_ingresada) == 0) return campo_observado->dato;
 
@@ -272,7 +272,7 @@ void *hash_borrar(hash_t *hash, const char *clave){
     void* dato_resultado = hash_obtener(hash, clave);
     if (dato_resultado == NULL) return dato_resultado;
 
-    int pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
+    size_t pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
     campo_t* campo_observado = hash->lista[pos_a_eliminar];
     if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
 
