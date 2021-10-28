@@ -40,6 +40,8 @@ typedef void (*hash_destruir_dato_t)(void *){
 */
 // ----PRIMITIVAS----
 // PRIMITIVAS ITERADOR
+int hash_iter_conseguir_prox_campo(const hash_iter_t* iter); 
+
 hash_iter_t *hash_iter_crear(const hash_t *hash){
     hash_iter_t* iterador = malloc(sizeof(hash_iter_t));
     if (hash->cantidad_lista == 0) {
@@ -185,11 +187,11 @@ bool hash_redimensionar(hash_t* hash, int nueva_capacidad){
     return true;
 }
 
-bool pos_esta_ocupada(hash_t *hash, int posicion){
+bool pos_esta_ocupada(hash_t *hash, size_t posicion){
     return (hash->lista[posicion] != NULL);
 }
 
-bool hash_guardar_aux(hash_t* hash, int posicion, const char* clave, void* dato){
+bool hash_guardar_aux(hash_t* hash, size_t posicion, const char* clave, void* dato){
     campo_t* nuevo_campo = crear_campo(clave, dato);
     if (nuevo_campo == NULL) return false;
 

@@ -1,5 +1,5 @@
-#IFNDEF FUNCIONES_HASH_H
-#DEFINE FUNCIONES_HASH_H
+#ifndef FUNCIONES_HASH_H
+#define FUNCIONES_HASH_H
 
 #include <stdio.h>
 #include <string.h>
@@ -80,4 +80,4 @@ static size_t fnv1a_hash(const char* cp)
 }
 */
 
-#ENDIF // FUNCIONES_HASH_H
+#endif // FUNCIONES_HASH_H
