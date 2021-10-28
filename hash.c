@@ -105,8 +105,7 @@ void destruir_campo(campo_t* campo_rip){
 }
 
 // PRIMITIVAS HASH
-// hash_t *hash_crear(hash_destruir_dato_t destruir_dato){ // WTF IS THIS
-hash_t *hash_crear(){
+hash_t *hash_crear(hash_destruir_dato_t destruir_dato){
     hash_t* hash = malloc(sizeof(hash_t));
     if (hash == NULL) return NULL;
 

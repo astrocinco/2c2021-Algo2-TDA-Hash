@@ -63,7 +63,7 @@ static size_t djb_hash(const char* cp)
 /* FUNCION SIN USAR POR RETORNAR NUMEROS NEGATIVOS
 // Fowler/Noll/Vo (FNV) hash function, variant 1a
 // https://codereview.stackexchange.com/questions/85556/simple-string-hashing-algorithm-implementation
-// La palabra meme da negativo pero el hash<0 no funciona
+// La palabra "meme" da negativo pero el hash<0 no funciona
 static size_t fnv1a_hash(const char* cp)
 {
     size_t hash = 0x811c9dc5;
@@ -80,4 +80,4 @@ static size_t fnv1a_hash(const char* cp)
 }
 */
 
-#ENDIF
+#ENDIF // FUNCIONES_HASH_H
