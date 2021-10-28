@@ -1,11 +1,11 @@
 run: build
 	./ejecutable
 
-hash.o: hash.c
-	gcc hash.c -c
+main.o: main.c
+	gcc main.c -c
 
-funciones_hash.o: funciones_hash.c
-	gcc funciones_hash.c -c
+testing.o: testing.c
+	gcc testing.c -c
 
-build: hash.o funciones_hash.o
-	cc hash.o funciones_hash.o -o ejecutable
+build: main.o testing.o
+	cc main.o -o ejecutable

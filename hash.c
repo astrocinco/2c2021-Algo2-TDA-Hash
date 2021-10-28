@@ -1,8 +1,9 @@
-#include "funciones_hash.c"
 #include <stdio.h>
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h> 
+#include "funciones_hash.h"
+#include "hash.h"
 // NO SE SI ALGUNO DE ESTOS INCLUDES SOBRA
 #define CAPACIDAD_INICIAL 97 // Numero primo
 #define FACTOR_NVO_TAM 10
@@ -10,8 +11,9 @@
 #define MIN_FACTOR_CARGA 0.1
 #define FUN_HASHING1 djb2
 #define FUN_HASHING2 sdbm
-#define FUN_HASHING3 func_vacia_1 // ELEGIR FUNCION DE HASHING
-#define FUN_HASHING4 func_vacia_2 // ELEGIR FUNCION DE HASHING
+#define FUN_HASHING3 paul 
+#define FUN_HASHING4 djb_hash
+// Hacer que todas las funciones retornen unsigned long? Y asegurarse que en todos lados esté unsigned long (o al menos hasta que se haga modulo)
 
 // ----ESTRUCTURAS----
 
@@ -27,7 +29,8 @@ typedef struct campo {
 } campo_t;
 
 typedef struct hash_iter {
-    int altura_en_lista;
+    hash_t* hash;
+    int altura_actual_lista;
     bool al_final;
 } hash_iter_t;
 /*
@@ -39,24 +42,52 @@ typedef void (*hash_destruir_dato_t)(void *){
 // PRIMITIVAS ITERADOR
 hash_iter_t *hash_iter_crear(const hash_t *hash){
     hash_iter_t* iterador = malloc(sizeof(hash_iter_t));
-    int altura_en_lista = 0;
-    // TERMINAR
+    if (hash->cantidad_lista == 0) {
+        iterador->altura_actual_lista = -1;
+        iterador->al_final = true;
+    } else{
+        iterador->altura_actual_lista = hash_iter_conseguir_prox_campo(iterador);
+        iterador->al_final = false;
+    }
+    return iterador;
+}
+
+bool hash_iter_quedan_campos(const hash_iter_t* iter){
+    for(int i = iter->altura_actual_lista; i < iter->hash->capacidad_lista; i++){
+        if (iter->hash->lista[i] != NULL) return true;
+    }
+    return false;
+}
+
+int hash_iter_conseguir_prox_campo(const hash_iter_t* iter){
+    for (int i = iter->altura_actual_lista; i < iter->hash->capacidad_lista; i++){
+        if (iter->hash->lista[i] != NULL) return i;
+    }   
+    return NULL;
 }
 
 bool hash_iter_avanzar(hash_iter_t *iter){
-    // TO DO
+    if (iter->al_final) return false;
+    if (!hash_iter_quedan_campos(iter)) {
+        iter->altura_actual_lista = -1;
+        iter->al_final = true;
+    }
+    iter->altura_actual_lista = hash_iter_conseguir_prox_campo(iter);
+    return true;
 }
 
 const char *hash_iter_ver_actual(const hash_iter_t *iter){
-    // TO DO
+    if (iter->al_final) return NULL;
+    campo_t* campo = iter->hash->lista[iter->altura_actual_lista];
+    return campo->clave;
 }
 
 bool hash_iter_al_final(const hash_iter_t *iter){
-    // TO DO
+    return iter->al_final;
 }
 
 void hash_iter_destruir(hash_iter_t* iter){
-    // TO DO
+    free(iter);
 }
 
 // PRIMITIVAS CAMPO
@@ -254,6 +285,8 @@ void *hash_borrar(hash_t *hash, const char *clave){
 
     pos_a_eliminar = FUN_HASHING4(clave) % hash->capacidad_lista;
     if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL;
+
+    return dato_resultado;
 }
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){ // FINISH

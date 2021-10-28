@@ -1,13 +1,5 @@
-// AQUI TODAS LAS FUNCIONES DE HASH QUE PODRIAMOS USAR
-// https://softwareengineering.stackexchange.com/questions/49550/which-hashing-algorithm-is-best-for-uniqueness-and-speed Acá hay muchas opciones
-// http://www.cse.yorku.ca/~oz/hash.html
-// https://stackoverflow.com/questions/34595/what-is-a-good-hash-function
-// http://burtleburtle.net/bob/hash/doobs.html
-// ????????como importamos esto????????? https://github.com/sindresorhus/fnv1a
-// ????????como importamos esto????????? https://github.com/aappleby/smhasher
-// https://en.wikipedia.org/wiki/List_of_hash_functions
-// https://www.strchr.com/hash_functions
-// ---------------------------------------------------------------------------------------------------
+#IFNDEF FUNCIONES_HASH_H
+#DEFINE FUNCIONES_HASH_H
 
 #include <stdio.h>
 #include <string.h>
@@ -87,38 +79,5 @@ static size_t fnv1a_hash(const char* cp)
     return hash;
 }
 */
-/*
-// .C para probar funciones de hashing. Compilar y llamar como: ./NOMBRE_COMPILADO NOMBRE_FUNCION TEXTO
-// Ejemplo: astrocinco$ ./prueba_funciones djb2 hola  ----->  Resultado: hola -> 6385302889
-// Si escribiste una función que no está retorna 0 en la terminal.
-int main(int argc, char* argv[]){
-  size_t resultado = 0;
-  if (argc != 3) {
-    printf("Error cantidad de parametros\n");
-    return -1;
-  }
 
-  if (strcmp(argv[1], "djb2") == 0){
-    resultado = djb2(argv[2]);
-  }
-
-  if (strcmp(argv[1], "sdbm") == 0){
-    resultado = sdbm(argv[2]);
-  }
-
-  if (strcmp(argv[1], "paul") == 0){
-    resultado = paul(argv[2]);
-  }
-
-  if (strcmp(argv[1], "djb") == 0){
-    resultado = djb_hash(argv[2]);
-  }
-
-  if (strcmp(argv[1], "fnv1a") == 0){
-    resultado = fnv1a_hash(argv[2]);
-  }
-
-  printf("Resultado: %s -> %li\n", argv[2], resultado);
-  return 0;
-}
-*/
+#ENDIF
