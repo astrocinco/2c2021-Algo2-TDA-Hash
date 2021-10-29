@@ -33,11 +33,9 @@ typedef struct hash_iter {
     int altura_actual_lista;
     bool al_final;
 } hash_iter_t;
-/*
-typedef void (*hash_destruir_dato_t)(void *){
-    // TO DO. WTF IS THIS
-} 
-*/
+
+typedef void (*hash_destruir_dato_t)(void *);
+
 // ----PRIMITIVAS----
 // PRIMITIVAS ITERADOR
 int hash_iter_conseguir_prox_campo(const hash_iter_t* iter); 
