@@ -36,6 +36,7 @@ typedef struct hash_iter {
 } hash_iter_t;
 
 typedef void (*hash_destruir_dato_t)(void *);
+typedef unsigned long (*func_hashing_t)(char* str);
 
 // ----PRIMITIVAS----
 // PRIMITIVAS ITERADOR
@@ -171,7 +172,7 @@ bool hash_redimensionar(hash_t* hash, int nueva_capacidad){
 }
 
 bool pos_esta_ocupada(const hash_t *hash, size_t posicion){
-    return (hash->lista[posicion]->dato != NULL);
+    return (hash->lista[posicion] != NULL);
 }
 
 bool hash_guardar_aux(hash_t* hash, size_t posicion, const char* clave, void* dato){
@@ -195,7 +196,7 @@ bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
 }
 
 bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
-    size_t hashing_clave = FUN_HASHING1(clave_ingresada);
+    size_t hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
     if (!pos_esta_ocupada( hash,hashing_clave)){
         return false;
     }
@@ -211,7 +212,11 @@ bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
 
     return false;
 }
+/*
+bool verificar_clave(hash_t *hash){
 
+}
+*/
 void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
     if (!hash_pertenece(hash, clave_ingresada)){
         return NULL;
@@ -235,9 +240,10 @@ void *hash_borrar(hash_t *hash, const char *clave){
 
     size_t pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
     campo_t* campo_observado = hash->lista[pos_a_eliminar];
-    if (campo_observado->dato == dato_resultado) hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
-
-
+    if (campo_observado->dato == dato_resultado){
+    hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
+    }
+    hash->cantidad_lista--;
     return dato_resultado;
 }
 
