@@ -179,7 +179,9 @@ bool pos_esta_ocupada(const hash_t *hash, size_t posicion){
 
 bool hash_guardar_aux(hash_t* hash, size_t posicion, const char* clave, void* dato){
     campo_t* nuevo_campo = crear_campo(clave, dato);
-    if (nuevo_campo == NULL) return false;
+    if (nuevo_campo == NULL){
+        return false;
+    }
 
     (hash->lista)[posicion] = nuevo_campo;
     hash->cantidad_lista++;
@@ -187,26 +189,36 @@ bool hash_guardar_aux(hash_t* hash, size_t posicion, const char* clave, void* da
 }
 
 bool hash_encontrar_pos_libre(hash_t *hash, const char *clave, void *dato){
-    if (hash->cantidad_lista / hash->capacidad_lista > MAX_FACTOR_CARGA) hash_redimensionar(hash, hash->capacidad_lista * FACTOR_NVO_TAM); // CREO QUE TENGO QUE ARMAR UNA LISTA CON NUEVAS CAPACIDAD QUE SEAN NUMEROS PRIMOS, NO UN MULTIPLICADOR DE NUEVO TAMAÑO
+    if (hash->cantidad_lista / hash->capacidad_lista > MAX_FACTOR_CARGA) hash_redimensionar(hash, hash->capacidad_lista * FACTOR_NVO_TAM);
+     // CREO QUE TENGO QUE ARMAR UNA LISTA CON NUEVAS CAPACIDAD QUE SEAN NUMEROS PRIMOS, NO UN MULTIPLICADOR DE NUEVO TAMAÑO
 
 
     size_t pos_fun_hash = FUN_HASHING1(clave) % hash->capacidad_lista;
     if (!pos_esta_ocupada(hash, pos_fun_hash)){
         return hash_guardar_aux(hash, pos_fun_hash, clave, dato);
     }
-    return false; // ESTO DEBERÍA SER UN RETURN FALSE O UNA LLAMADA A hash_redimensionar E INTENTAR TODA LA FUNCION DE NUEVO?
+    size_t pos_fun_hash2 = FUN_HASHING2(clave) % hash->capacidad_lista;
+    if (!pos_esta_ocupada(hash, pos_fun_hash2)){
+        return hash_guardar_aux(hash, pos_fun_hash2, clave, dato);
+    }
+    size_t pos_fun_hash3 = FUN_HASHING3(clave) % hash->capacidad_lista;
+    if (!pos_esta_ocupada(hash, pos_fun_hash3)){
+        return hash_guardar_aux(hash, pos_fun_hash3, clave, dato);
+    }
+    return false; 
+    // ESTO DEBERÍA SER UN RETURN FALSE O UNA LLAMADA A hash_redimensionar E INTENTAR TODA LA FUNCION DE NUEVO?
 }
 
 bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
     size_t hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
-    if (!pos_esta_ocupada( hash,hashing_clave)){
+    if (!pos_esta_ocupada(hash,hashing_clave)){
         return false;
     }
     campo_t* campo_observado = hash->lista[hashing_clave];
 
     if (campo_observado != NULL) {
         if (campo_observado->clave == clave_ingresada){
-             return true;    
+            return true;    
         }
     } // Revisar si lista vacía retorna NULL
 
