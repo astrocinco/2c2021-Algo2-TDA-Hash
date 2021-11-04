@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include <stdbool.h>
 #include <stdlib.h> 
+#include <string.h>
 #include "funciones_hash.h"
 #include "hash.h"
 
@@ -13,7 +14,7 @@ const double MIN_FACTOR_CARGA = 0.2;
 #define FUN_HASHING1 djb2
 #define FUN_HASHING2 sdbm
 #define FUN_HASHING3 paul 
-#define FUN_HASHING4 djb_hash
+//#define FUN_HASHING4 djb_hash
 // Hacer que todas las funciones retornen unsigned long? Y asegurarse que en todos lados esté unsigned long (o al menos hasta que se haga modulo)
 
 // ----ESTRUCTURAS----
@@ -36,7 +37,7 @@ typedef struct hash_iter {
 } hash_iter_t;
 
 typedef void (*hash_destruir_dato_t)(void *);
-typedef unsigned long (*func_hashing_t)(char* str);
+typedef unsigned long (*func_hashing_t)(const char* str);
 
 // ----PRIMITIVAS----
 // PRIMITIVAS ITERADOR
@@ -100,13 +101,14 @@ void hash_iter_destruir(hash_iter_t* iter){
 
 // PRIMITIVAS CAMPO
 campo_t* crear_campo(const char* clave, void* dato){
-    campo_t* campo = malloc(sizeof(campo));
+    campo_t* campo = malloc(sizeof(campo_t));
     if (campo == NULL){
         return NULL;
     } 
+    void* copia = dato;
     campo->clave = clave;
+    campo->dato = copia;
 
-    campo->dato = dato;
     return campo;
 }
 
@@ -212,39 +214,71 @@ bool hash_pertenece(const hash_t *hash, const char *clave_ingresada){
 
     return false;
 }
-/*
-bool verificar_clave(hash_t *hash){
 
-}
-*/
-void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
+void* verificar_clave(const hash_t *hash, func_hashing_t func,const char *clave_ingresada){
     if (!hash_pertenece(hash, clave_ingresada)){
         return NULL;
     }
-
-    size_t hashing_clave = FUN_HASHING1(clave_ingresada) % hash->capacidad_lista;
+    size_t hashing_clave = func(clave_ingresada) % hash->capacidad_lista;
     campo_t* campo_observado = hash->lista[hashing_clave];
     if (strcmp(campo_observado->clave, clave_ingresada) == 0){
         return campo_observado->dato;
+    } else{
+        return NULL;
     }
+}
 
-    printf("REVISAR HASH_OBTENER hash.c");
+void *hash_obtener(const hash_t *hash, const char *clave_ingresada){
+    void* func1 = verificar_clave(hash,FUN_HASHING1,clave_ingresada);
+    if (func1 != NULL){
+        return func1;
+    }
+    void* func2 = verificar_clave(hash,FUN_HASHING2,clave_ingresada);
+    if (func2 != NULL){
+        return func2;
+    }
+    void* func3 = verificar_clave(hash,FUN_HASHING3,clave_ingresada);
+    if (func3 != NULL){
+        return func3;
+    }
+    
+    //printf("REVISAR HASH_OBTENER hash.c");
     return NULL; // NUNCA DEBERÍA LLEGAR AQUI 
 }
 
-void *hash_borrar(hash_t *hash, const char *clave){
+void* borrar_aux(const hash_t *hash, func_hashing_t func,const char *clave){
     void* dato_resultado = hash_obtener(hash, clave);
     if (dato_resultado == NULL){
         return dato_resultado;
     }
-
-    size_t pos_a_eliminar = FUN_HASHING1(clave) % hash->capacidad_lista;
+    size_t pos_a_eliminar = func(clave) % hash->capacidad_lista;
     campo_t* campo_observado = hash->lista[pos_a_eliminar];
+
     if (campo_observado->dato == dato_resultado){
-    hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
+        hash->lista[pos_a_eliminar] = NULL; // Puede que este == sea incorrecto
+        free(campo_observado);
     }
-    hash->cantidad_lista--;
     return dato_resultado;
+}
+
+void *hash_borrar(hash_t *hash, const char *clave){
+    void* dato_fun1 = borrar_aux(hash,FUN_HASHING1,clave);
+    if (dato_fun1 != NULL){
+        hash->cantidad_lista--;
+        return dato_fun1;
+    }
+    void* dato_fun2 = borrar_aux(hash,FUN_HASHING2,clave);
+    if (dato_fun2 != NULL){
+        hash->cantidad_lista--;
+        return dato_fun2;
+    }
+    void* dato_fun3 = borrar_aux(hash,FUN_HASHING3,clave);
+    if (dato_fun3 != NULL){
+        hash->cantidad_lista--;
+
+        return dato_fun3;
+    }
+    return NULL;
 }
 
 bool hash_guardar(hash_t *hash, const char *clave, void *dato){ // FINISH
